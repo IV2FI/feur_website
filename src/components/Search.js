@@ -3,7 +3,6 @@ import axios from 'axios'
 import Moment from 'react-moment';
 import Emoji from './Emoji';
 import { FaTwitter } from 'react-icons/fa';
-import 'moment/locale/fr';
 
 class Search extends Component {
     
@@ -56,7 +55,7 @@ class Search extends Component {
             </div>
             {this.state.user !== null && this.state.user.length > 0 ? 
             <div>
-                <p className="mx-auto mt-6 text-sm text-center text-red-700 dark:text-red-400 sm:text-base md:text-md xl:text-md">Cet utilisateur a fait la blague du "feur" <b>{this.state.user[0].feurs} fois</b> depuis le 21 décembre 2021 ! La dernière fois était <b><Moment fromNow>{this.state.user[0].updated_at}</Moment></b> <Emoji symbol="👎"/></p>
+                <p className="mx-auto mt-6 text-sm text-center text-red-700 dark:text-red-400 sm:text-base md:text-md xl:text-md">Cet utilisateur a fait la blague du "feur" <b>{this.state.user[0].feurs} fois</b> depuis le 21 décembre 2021 ! La dernière fois était <b><Moment locale="fr" fromNow>{this.state.user[0].updated_at}</Moment></b> <Emoji symbol="👎"/></p>
                 <button className="inline bg-sky-500 hover:bg-sky-700 shadow-md text-white font-bold py-2 px-4 rounded mt-5" onClick={() => this.performAction(this)}>
                 <a
                 id="tweet-quote"

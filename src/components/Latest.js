@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import Moment from 'react-moment';
-import 'moment/locale/fr';
 
 class Latest extends Component {
 
@@ -44,7 +43,7 @@ class Latest extends Component {
                                 <div className="flex flex-col items-center justify-center p-10">
                                     <img className="w-12 h-12 mb-6 rounded-full border-2 border-black" src={user.image} alt={"profile-picture-"+user.name}/>
                                     <h2 className="text-lg font-medium text-black dark:text-white">{user.name}</h2>
-                                    <p className="text-gray-700 dark:text-gray-400"><Moment fromNow>{user.updated_at}</Moment>
+                                    <p className="text-gray-700 dark:text-gray-400"><Moment locale="fr" fromNow>{user.updated_at}</Moment>
                                 </p></div>
                             </div>
                         )}
