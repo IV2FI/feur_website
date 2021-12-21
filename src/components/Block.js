@@ -180,7 +180,7 @@ class Block extends Component {
                     </div>
                 </div>
 
-                <p className="mt-5 font-bold leading-10 tracking-tight text-green-800 dark:text-green-400 sm:text-md sm:leading-none md:text-md xl:text-md">Tu as une demande en cours ! Il reste encore {this.state.usersLeft} utilisateurs à traiter pour toi. Pas la peine de rester sur le site pour que ça se fasse ! Fin estimée : {(this.state.usersLeft/50) > 1 ? Math.ceil((this.state.usersLeft/50)*15) + " minutes" : "d'ici 15 minutes"}</p>
+                <p className="mt-5 font-bold leading-10 tracking-tight text-green-800 dark:text-green-400 sm:text-md sm:leading-none md:text-md xl:text-md">Tu as une demande en cours ! Il reste encore {this.state.usersLeft} utilisateurs à traiter pour toi. Pas la peine de rester sur le site pour que ça se fasse ! Fin estimée : {(this.state.usersLeft/50) > 1 ? Math.floor(this.state.usersLeft/50)*15 + " minutes" : "d'ici 15 minutes"}</p>
 
                 </div>
               }
