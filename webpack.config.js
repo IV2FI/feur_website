@@ -1,5 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
   watch: false,
@@ -38,6 +39,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       favicon: './src/resources/favicon.ico'
-    })
+    }),
+    new MomentLocalesPlugin({
+            localesToKeep: ['fr'],
+        })
   ]
 }
