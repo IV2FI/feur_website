@@ -125,7 +125,7 @@ class Block extends Component {
             <div className="max-w-2xl mx-auto mt-12">
                 <span className="font-extrabold leading-10 tracking-tight text-black dark:text-white sm:text-xl sm:leading-none md:text-xl xl:text-xl">Je veux</span>
                 <div className="inline">
-                    <select onChange={(event) => this.changeOption(event)} value={this.state.option} className="sm:text-xl sm:leading-none md:text-xl xl:text-xl appearance-none mr-2 ml-2 rounded-none w-32 tracking-wide hover:cursor-pointer text-center border-b-2 border-red-500 hover:border-red-60 shadow-md py-2 inline-flex items-center bg-transparent font-extrabold text-red-500 dark:text-red-200 focus:outline-none">
+                    <select onChange={(event) => this.changeOption(event)} value={this.state.option} className="sm:text-xl sm:leading-none md:text-xl xl:text-xl mr-2 ml-2 rounded-none tracking-wide hover:cursor-pointer text-center border-b-2 border-red-500 hover:border-red-60 py-2 inline-flex items-center bg-transparent font-extrabold text-black dark:text-white focus:outline-none">
                         <option value="mute">masquer</option>
                         <option value="unmute">démasquer</option>
                         <option value="block">bloquer</option>
@@ -134,12 +134,14 @@ class Block extends Component {
                 </div>
 
                 <div className="inline">
-                    <select onChange={(event) => this.changeOption2(event)} value={this.state.option2} className="sm:text-xl sm:leading-none md:text-xl xl:text-xl appearance-none inline-flex mr-2 ml-2 w-96 rounded-none tracking-wide hover:cursor-pointer text-center border-b-2 border-red-500 hover:border-red-60 shadow-md py-2 items-center bg-transparent font-extrabold text-red-500 dark:text-red-200 focus:outline-none">
+                    <select onChange={(event) => this.changeOption2(event)} value={this.state.option2} className="sm:text-xl sm:leading-none md:text-xl xl:text-xl inline-flex mr-2 ml-2 rounded-none tracking-wide hover:cursor-pointer text-center border-b-2 border-red-500 hover:border-red-60 py-2 items-center bg-transparent font-extrabold text-black dark:text-white focus:outline-none">
                         <option value="word">le mot feur de mon Twitter !</option>
                         <option value="avg">les plus forceurs avec cette blague</option>
                         <option value="most">le top 1% des plus forceurs</option>
                     </select>
                 </div>
+
+                <div></div>
                 {/*<span className="font-extrabold leading-10 tracking-tight text-black dark:text-white sm:text-xl sm:leading-none md:text-xl xl:text-xl"> les </span>
                 <input onChange={(event) => this.changePercent(event)} type="text" name="percent" placeholder="" className="mr-2 ml-2 rounded-none w-20 tracking-wide text-center border-b-2 border-red-500 hover:border-red-60 shadow-md py-2 inline-flex items-center bg-transparent font-bold text-red-500 dark:text-red-200 focus:outline-none" value={(this.state.percent)}></input>
                 <span className="font-extrabold leading-10 tracking-tight text-black dark:text-white sm:text-xl sm:leading-none md:text-xl xl:text-xl">les plus forceurs avec cette blague</span>*/}
