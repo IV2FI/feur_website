@@ -42,7 +42,7 @@ class Block extends Component {
             });
             if(res.data.result){
                 this.fetchSessionUserHistory()
-                //this.interval = setInterval(() => this.fetchSessionUserHistory(), 30000);
+                this.interval = setInterval(() => this.fetchSessionUserHistory(), 30000);
             }
         })
     }
