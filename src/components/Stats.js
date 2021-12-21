@@ -16,7 +16,7 @@ class Stats extends Component {
         totalFeursPerHour: "0",
         maxFeursForAUser: "0",
         maxFeursPerHour: "0",
-        startDate:"2021-12-18 12:49:53"
+        startDate:"2021-12-21 00:49:48"
     };
 
     componentDidMount() {
