@@ -45,182 +45,83 @@ app.use(session({
 	saveUninitialized: false
 }));
 
-var passport = require('passport');
-var Strategy = require('passport-twitter').Strategy;
 const req = require('express/lib/request');
 
-passport.use(new Strategy({
-  consumerKey: process.env.CONSUMER_KEY,
-  consumerSecret: process.env.CONSUMER_SECRET,
-  callbackURL: callbackUrlForTwitter+"/api/login/callback",
-  passReqToCallback: true
-}, function(req, token, tokenSecret, profile, callback) {
-  profile.token = token
-  profile.tokenSecret = tokenSecret
-  callbackFromTwitter = mainUrl+"?option="+req.query.option+"&on="+req.query.on
-  userTwitter = new Twitter(process.env.CONSUMER_KEY, process.env.CONSUMER_SECRET, token, tokenSecret, profile.id, profile.username)
-  return callback(null, profile);
-}));
-
-passport.serializeUser(function(user, callback) {
-  callback(null, user);
-})
-
-passport.deserializeUser(function(obj, callback) {
-  callback(null, obj);
-})
-
-app.use(passport.initialize())
-app.use(passport.session())
-
-app.get('/api/login/callback', passport.authenticate('twitter', {
-  failureRedirect: mainUrl
-}), async function(req, res) {
-  if(req.session && req.session.callbackFromTwitter){
-    res.redirect(req.session.callbackFromTwitter)
-  }
-  else{ 
-    res.redirect(mainUrl)
-  }
-})
-
-app.get('/api/login/twitter', function(req, res){
-  req.session.callbackFromTwitter = mainUrl+"?option="+req.query.option+"&on="+req.query.on
-  res.redirect('/api/twitter/login')
-})
-
-app.get('/api/twitter/login', passport.authenticate('twitter'))
-
-app.get('/api/numberOfMasks', function(req, res){
-  database.getTotalMasks(function(err, results){
-    res.json(results[0])
-  })
-})
-
-app.get('/api/numberOfUnMasks', function(req, res){
-  database.getTotalUnmasks(function(err, results){
-    res.json(results[0])
-  })
-})
-
-app.get('/api/numberOfBlocks', function(req, res){
-  database.getTotalBlocks(function(err, results){
-    res.json(results[0])
-  })
-})
-
-app.get('/api/numberOfUnBlocks', function(req, res){
-  database.getTotalUnblocks(function(err, results){
-    res.json(results[0])
-  })
-})
-
-app.get('/api/getTotalWordMutes', function(req, res){
-  database.getTotalWordMutes(function(err, results){
-    res.json(results[0])
-  })
-})
-
-app.get('/api/getTotalWordUnMutes', function(req, res){
-  database.getTotalWordUnMutes(function(err, results){
-    res.json(results[0])
-  })
-})
-
-app.get('/api/addWordMute', function(req, res){
-  database.addNewWordMutesToTableHistory(function(err, results){
-    res.json(results)
-  })
-})
-
-app.get('/api/addWordUnMute', function(req, res){
-  database.addNewWordUnMutesToTableHistory(function(err, results){
-    res.json(results)
-  })
-})
-
-app.get('/api/twitter/isSession', function(req, res){
-  if(req.session.passport && req.session.passport.user){
-    res.json({result: true})
-  }else{
-    res.json({result:false})
-  }
-})
-
-app.get("/api/userBlockHistory", function(req, res){
-  if(req.session.passport && req.session.passport.user){
-    database.getUserBlockHistory(req.session.passport.user.id, function(err, results){
-      res.json(results)
-    })
-  }else{
-    res.json(null)    
-  }
-})
-
-app.get("/api/feurme-la", function(req, res){
-  if(req.query.on && req.query.action && req.session.passport && req.session.passport.user){
-    database.getUserBlockHistory(req.session.passport.user.id, function(err, userHistory){
-      if(req.query.on == "avg"){
-        database.getAboveAverageScore(function(err, results){
-          res.json(userTwitter.launchAction(results, req.query.action, userHistory, database, twitter))
-        })
-      } else if(req.query.on == "most"){
-        database.getTopXPercent(1, function(err, results){
-          res.json(userTwitter.launchAction(results, req.query.action, userHistory, database, twitter))
-        })
-      } else if(req.query.on == "all"){
-        database.getEveryUsers(function(err, results){
-          res.json(userTwitter.launchAction(results, req.query.action, userHistory, database, twitter))
-        })
+app.get('/api/user', function (req, res) {
+  if(req.query.username){
+    database.getUser(req.query.username, function(err, results){
+      if(results) {
+        database.getHowManyAbove(function(err, how_many){
+          results.rank = how_many.count + 1
+          database.getCountTrolls(function(err, trolls){
+            results.total_trolls = trolls.count + 1
+            database.getCountVictims(function(err, victims){
+              results.total_victims = victims.count + 1
+              database.getHowManyAboveVictim(function(err, how_many_victims){
+                results.rank_victim = how_many_victims.count + 1
+                database.getLatestTweetsFrom(function(err, tweets){
+                  results.tweets = tweets
+                  res.json(results)
+                }, 10, results.username)
+              }, results.nb_received)  
+            })
+          })
+        }, results.nb_sent)
+      } else {
+        res.json(results)
       }
     })
   }
-})
-
-app.get('/api/getCount', function (req, res) {
-  database.getCount(function(err, results){
-    res.json(results)
-  })
 });
 
-app.get('/api/getTopXPercent', function (req, res) {
-  database.getAboveAverageScore(function(err, results){
-    res.json(results)
-  })
-});
-
-app.get('/api/getCount', function (req, res) {
-  database.getCount(function(err, results){
-    res.json(results)
-  })
-});
-
-app.get('/api/getMaxFeurs', function (req, res) {
-  database.getMaxFeurs(function(err, results){
-    res.json(results)
-  })
-});
-
-app.get('/api/getUser', function (req, res) {
-  if(req.query.username){
-    database.getUser(req.query.username, function(err, results){
-      res.json(results)
-    })
-  }
-});
-
-app.get('/api/getTotalFeurs', function (req, res) {
-  database.getTotalFeurs(function(err, results){
-    res.json(results)
-  })
-});
-
-app.get('/api/getLastUsers', function (req, res) {
+app.get('/api/tweet/latest', function (req, res) {
   if(req.query.limit){
-    database.getLastUsers(req.query.limit, function(err, results){
+    database.getLastTweets(req.query.limit, function(err, results){
       res.json({'result': results, 'errors': err})
     })
   }
+});
+
+app.get('/api/stats', function (req, res) {
+  database.getDailyStats(function(err, results){
+    res.json(results)
+  })
+});
+
+app.get('/api/latestUpdate', function (req, res) {
+  database.getLatestUpdate(function(err, results){
+    res.json(results)
+  })
+});
+
+app.get('/api/troll/total', function (req, res) {
+  database.getTotalTrolls(function(err, results){
+    res.json(results)
+  })
+});
+
+app.get('/api/victim/total', function (req, res) {
+  database.getTotalVictims(function(err, results){
+    res.json(results)
+  })
+});
+
+app.get('/api/troll/max', function (req, res) {
+  database.getMaxTroll(function(err, results){
+    res.json(results)
+  })
+});
+
+app.get('/api/victim/max', function (req, res) {
+  database.getMaxVictim(function(err, results){
+    res.json(results)
+  })
+});
+
+app.get('/api/tweet/total', function (req, res) {
+  database.getTotalTweets(function(err, results){
+    res.json(results)
+  })
 });
 
 app.use('/', express.static('./dist', {

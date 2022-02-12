@@ -12,9 +12,58 @@ module.exports = class Database {
             supportBigNumbers: true
         });
         this.connection.connect()
-        this.blockHistoryTable = process.env.DB_TABLE_BLOCK
+        this.tweetTable = process.env.DB_TABLE_TWEETS
         this.userTable = process.env.DB_TABLE_USERS
-        this.wordMutesTable = process.env.DB_WORD_MUTES
+        this.statsTable = process.env.DB_TABLE_STATS
+    }
+
+    getTotalTrolls = (callback) => {
+        var sql = "SELECT COUNT(*) AS trolls FROM " + this.userTable + " WHERE nb_sent>0"
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getTotalVictims = (callback) => {
+        var sql = "SELECT COUNT(*) AS victims FROM " + this.userTable + " WHERE nb_received > 0"
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getMaxTroll = (callback) => {
+        var sql = "SELECT * FROM " + this.userTable + " ORDER BY nb_sent DESC LIMIT 1"
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getMaxVictim = (callback) => {
+        var sql = "SELECT * FROM " + this.userTable + " ORDER BY nb_received DESC LIMIT 1"
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getTotalTweets = (callback) => {
+        var sql = "SELECT COUNT(*) AS total FROM " + this.tweetTable
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getDailyStats = (callback) => {
+        var sql = "SELECT * FROM " + this.statsTable
+        this.connection.query(sql, function(err, results){
+            callback(err, results)
+        })
+    }
+
+    getLatestUpdate = (callback) => {
+        var sql = "SELECT created_at FROM " + this.statsTable + " ORDER BY day DESC LIMIT 1;"
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
     }
 
     getUserBlockHistory = (userId, callback) => {
@@ -176,10 +225,46 @@ module.exports = class Database {
         })
     }
 
-    getUser = (username, callback) => {
-        var sql = "SELECT * FROM " + this.userTable + " WHERE name="+this.connection.escape(username)
+    getCountTrolls = (callback) => {
+        var sql = "SELECT COUNT(*) AS count FROM " + this.userTable + " WHERE nb_sent > 0"
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getHowManyAbove = (callback, limit) => {
+        var self = this
+        var sql = "SELECT COUNT(*) AS count FROM " + this.userTable + " WHERE nb_sent > " + this.connection.escape(limit)
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getCountVictims = (callback) => {
+        var sql = "SELECT COUNT(*) AS count FROM " + this.userTable + " WHERE nb_received > 0"
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getHowManyAboveVictim = (callback, limit) => {
+        var sql = "SELECT COUNT(*) AS count FROM " + this.userTable + " WHERE nb_received > " + this.connection.escape(limit)
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
+        })
+    }
+
+    getLatestTweetsFrom = (callback, howMany, user) => {
+        var sql = "SELECT * FROM " + this.tweetTable + " WHERE username = " + this.connection.escape(user) + " ORDER BY created_at DESC LIMIT " + this.connection.escape(howMany)
         this.connection.query(sql, function(err, results){
             callback(err, results)
+        })
+    }
+
+    getUser = (username, callback) => {
+        var sql = "SELECT * FROM " + this.userTable + " WHERE username="+this.connection.escape(username)
+        this.connection.query(sql, function(err, results){
+            callback(err, results[0])
         })
     }
 
@@ -201,6 +286,18 @@ module.exports = class Database {
         limit = parseInt(limit)
         if(limit < 20)  {
             var sql = "SELECT * FROM " + this.userTable + " ORDER BY updated_at DESC LIMIT " + limit;
+            this.connection.query(sql, function(err, results){
+                callback(err, results)
+            })
+        } else {
+            throw new Error("Cannot select that many")
+        }
+    }
+
+    getLastTweets = (limit, callback) => {
+        limit = parseInt(limit)
+        if(limit < 20)  {
+            var sql = "SELECT * FROM " + this.tweetTable + " ORDER BY created_at DESC LIMIT " + limit;
             this.connection.query(sql, function(err, results){
                 callback(err, results)
             })
