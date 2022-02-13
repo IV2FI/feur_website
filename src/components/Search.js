@@ -88,7 +88,7 @@ class Search extends Component {
                     <div className="flex flex-wrap mt-2 mb-4">
 
                         <div className="w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2">
-                            <p className="mt-2 text-sm text-center text-gray-500 dark:text-gray-200"><span className="mr-1"><Emoji symbol="🌼"/></span> {this.state.user.nb_sent} blague{this.state.user.nb_sent > 1 ? "s" : ""} faite{this.state.user.nb_sent > 1 ? "s" : ""}</p>
+                            <p className="mt-2 text-sm text-center text-gray-500 dark:text-gray-200"><span className="mr-1"><Emoji symbol="💈"/></span> {this.state.user.nb_sent} blague{this.state.user.nb_sent > 1 ? "s" : ""} faite{this.state.user.nb_sent > 1 ? "s" : ""}</p>
                         </div>
 
                         <div className="w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2">

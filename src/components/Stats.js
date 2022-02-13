@@ -33,7 +33,7 @@ const renderTooltipContent = (o) => {
 class Stats extends Component {
 
     state = {
-        startDate:"2022-01-26 00:03:23",
+        startDate:"2022-01-26T00:03:23",
         stats: null,
         data: null,
         update: null,
@@ -52,11 +52,13 @@ class Stats extends Component {
         var now = Date.now()
         var beginning = Date.parse(this.state.startDate)
         var hoursPassed = Math.abs(beginning - now) / 36e5
+        this.setState({
+            hoursPassed: hoursPassed
+        })
         axios.get("/api/latestUpdate")
         .then((res) => {
             this.setState({
-                update: res.data.created_at,
-                hoursPassed: hoursPassed
+                update: res.data.created_at
             })
         })
 
@@ -65,6 +67,7 @@ class Stats extends Component {
             this.setState({
                 totalTweets: res.data.total
             })
+            console.log(Math.floor(this.state.totalTweets / this.state.hoursPassed))
         })
         axios.get("/api/troll/max")
         .then((res) => {
@@ -125,12 +128,12 @@ class Stats extends Component {
             <section className="w-full bg-slate-200 dark:bg-slate-800 pt-7 pb-7 md:pt-20 md:pb-24">            
 
                     <h2 className="m-0 text-xl mx-auto text-center font-semibold leading-tight border-0 text-black dark:text-white border-gray-300 lg:text-3xl md:text-2xl t-2">
-                        Statistiques
+                        Statistiques depuis fin janvier 2022
                     </h2>
 
                     <p class="text-sm mx-auto text-center leading-tight border-0 text-black dark:text-gray-400 border-gray-300 pb-4">Dernière mise à jour <Moment fromNow locale="fr">{this.state.update}</Moment></p>
 
-                {this.state.data == null ? <></> : 
+                {this.state.data == null || this.state.totalTweets == null || this.state.nbTrolls == null || this.state.maxTroll == null || this.state.maxVictim == null || this.state.hoursPassed == null ? <></> : 
                 <>
 
                 <div id="wrapper" class="max-w-7xl px-4 py-4 mx-auto">
@@ -149,7 +152,7 @@ class Stats extends Component {
                                 
                                 <p class="text-3xl font-semibold text-center text-gray-800">{this.state.nbTrolls}</p>
                                 <p class="text-lg text-center text-gray-500">Nombre de trolls</p>
-                                <p class="text-xs text-center text-gray-500">Quel indignité !</p>
+                                <p class="text-xs text-center text-gray-500">Quelle indignité !</p>
                             </div>
                         </div>
 
