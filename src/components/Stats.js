@@ -109,7 +109,7 @@ class Stats extends Component {
     prepareHourlyData = (stats) => {
         var data = JSON.parse(JSON.stringify(stats))
         for(var i=0 ; i<data.length ; i++){
-            data[i]["axis"] = data[i]["Day"] +  "/" + data[i]["Month"] + " " + data[i]["Hour"] + "H"
+            data[i]["axis"] = data[i]["Hour"]+1 + "H"
         }
         this.setState(
             {
