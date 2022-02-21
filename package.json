@@ -1,5 +1,5 @@
 {
-  "name": "Feurmons leurs gueules",
+  "name": "Feurtracker",
   "version": "1.0.0",
   "description": "Pour un Twitter où l'on peut finir ses tweets par quoi.",
   "main": "index.js",
@@ -45,6 +45,7 @@
     "react-twitter-widgets": "^1.10.0",
     "recharts": "^2.1.9",
     "request": "^2.88.2",
+    "source-map-loader": "^3.0.1",
     "twitter-api-v2": "^1.7.2",
     "web-vitals": "^2.1.2",
     "webpack": "^5.65.0"

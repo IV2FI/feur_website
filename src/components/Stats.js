@@ -35,6 +35,7 @@ class Stats extends Component {
     state = {
         startDate:"2022-01-26T00:03:23",
         stats: null,
+        hourlyStat: null,
         data: null,
         update: null,
         totalTweets: null,
@@ -67,7 +68,10 @@ class Stats extends Component {
             this.setState({
                 totalTweets: res.data.total
             })
-            console.log(Math.floor(this.state.totalTweets / this.state.hoursPassed))
+        })
+        axios.get("/api/stats/hourly")
+        .then((res) => {
+            this.prepareHourlyData(res.data)
         })
         axios.get("/api/troll/max")
         .then((res) => {
@@ -102,6 +106,17 @@ class Stats extends Component {
           });
     }
 
+    prepareHourlyData = (stats) => {
+        var data = JSON.parse(JSON.stringify(stats))
+        for(var i=0 ; i<data.length ; i++){
+            data[i]["axis"] = data[i]["Day"] +  "/" + data[i]["Month"] + " " + data[i]["Hour"] + "H"
+        }
+        this.setState(
+            {
+                hourlyStat: data
+        });
+    }
+
     prepareData = (stats) => {
         var data = JSON.parse(JSON.stringify(stats))
         var day;
@@ -131,49 +146,75 @@ class Stats extends Component {
                         Statistiques depuis fin janvier 2022
                     </h2>
 
-                    <p class="text-sm mx-auto text-center leading-tight border-0 text-black dark:text-gray-400 border-gray-300 pb-4">Dernière mise à jour <Moment fromNow locale="fr">{this.state.update}</Moment></p>
+                    <p className="text-sm mx-auto text-center leading-tight border-0 text-black dark:text-gray-400 border-gray-300 pb-4 mt-4">Dernière mise à jour <Moment fromNow locale="fr">{this.state.update}</Moment></p>
 
                 {this.state.data == null || this.state.totalTweets == null || this.state.nbTrolls == null || this.state.maxTroll == null || this.state.maxVictim == null || this.state.hoursPassed == null ? <></> : 
                 <>
 
-                <div id="wrapper" class="max-w-7xl px-4 py-4 mx-auto">
-                    <div class="sm:grid sm:h-32 sm:grid-flow-row sm:gap-4 sm:grid-cols-4">
-                        <div id="jh-stats-positive" class="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded">
+                <div id="wrapper" className="max-w-7xl px-4 py-4 mx-auto">
+                    <div className="sm:grid sm:h-32 sm:grid-flow-row sm:gap-4 sm:grid-cols-4">
+                        <div id="jh-stats-positive" className="flex flex-col justify-center px-4 py-4 bg-white border border-gray-300 rounded">
                             <div>
                                 
-                                <p class="text-3xl font-semibold text-center text-gray-800">{this.state.totalTweets}</p>
-                                <p class="text-lg text-center text-gray-500">Blagues tweetées</p>
-                                <p class="text-xs text-center text-gray-500">Soit {Math.floor(this.state.totalTweets / this.state.hoursPassed)}/heure</p>
+                                <p className="text-3xl font-semibold text-center text-gray-800">{this.state.totalTweets}</p>
+                                <p className="text-lg text-center text-gray-500">Blagues tweetées</p>
+                                <p className="text-xs text-center text-gray-500">Soit {Math.floor(this.state.totalTweets / this.state.hoursPassed)}/heure</p>
                             </div>
                         </div>
             
-                        <div id="jh-stats-negative" class="flex flex-col justify-center px-4 py-4 mt-4 bg-white border border-gray-300 rounded sm:mt-0">
+                        <div id="jh-stats-negative" className="flex flex-col justify-center px-4 py-4 mt-4 bg-white border border-gray-300 rounded sm:mt-0">
                             <div>
                                 
-                                <p class="text-3xl font-semibold text-center text-gray-800">{this.state.nbTrolls}</p>
-                                <p class="text-lg text-center text-gray-500">Nombre de trolls</p>
-                                <p class="text-xs text-center text-gray-500">Quelle indignité !</p>
+                                <p className="text-3xl font-semibold text-center text-gray-800">{this.state.nbTrolls}</p>
+                                <p className="text-lg text-center text-gray-500">Nombre de trolls</p>
+                                <p className="text-xs text-center text-gray-500">Quelle indignité !</p>
                             </div>
                         </div>
 
-                        <div id="jh-stats-neutral" class="flex flex-col justify-center px-4 py-4 mt-4 bg-white border border-gray-300 rounded sm:mt-0">
+                        <div id="jh-stats-neutral" className="flex flex-col justify-center px-4 py-4 mt-4 bg-white border border-gray-300 rounded sm:mt-0">
                             <div>
                                 
-                                <p class="text-3xl font-semibold text-center text-gray-800">{this.state.maxTroll.nb_sent}</p>
-                                <p class="text-lg text-center text-gray-500">Record individuel</p>
-                                <p class="text-xs text-center text-gray-500">de blagues tweetées, soit {Math.floor(this.state.maxTroll.nb_sent / this.state.hoursPassed)}/heure</p>
+                                <p className="text-3xl font-semibold text-center text-gray-800">{this.state.maxTroll.nb_sent}</p>
+                                <p className="text-lg text-center text-gray-500">Record individuel</p>
+                                <p className="text-xs text-center text-gray-500">de blagues tweetées, soit {Math.floor(this.state.maxTroll.nb_sent / this.state.hoursPassed)}/heure</p>
                             </div>
                         </div>
 
-                        <div id="jh-stats-neutral" class="flex flex-col justify-center px-4 py-4 mt-4 bg-white border border-gray-300 rounded sm:mt-0">
+                        <div id="jh-stats-neutral" className="flex flex-col justify-center px-4 py-4 mt-4 bg-white border border-gray-300 rounded sm:mt-0">
                             <div>
                                 
-                                <p class="text-3xl font-semibold text-center text-gray-800">{this.state.maxVictim.nb_received}</p>
-                                <p class="text-lg text-center text-gray-500">Record individuel</p>
-                                <p class="text-xs text-center text-gray-500">de blagues reçues, soit {Math.floor(this.state.maxVictim.nb_received / this.state.hoursPassed)}/heure</p>
+                                <p className="text-3xl font-semibold text-center text-gray-800">{this.state.maxVictim.nb_received}</p>
+                                <p className="text-lg text-center text-gray-500">Record individuel</p>
+                                <p className="text-xs text-center text-gray-500">de blagues reçues, soit {Math.floor(this.state.maxVictim.nb_received / this.state.hoursPassed)}/heure</p>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="sm:w-full md:w-8/12 justify-center items-center mx-auto mt-10" id="chart-tweets">
+                    <h3 className="m-0 mb-2 text-md mx-auto text-center font-semibold leading-tight border-0 text-black dark:text-white border-gray-300 lg:text-xl md:text-xl t-2">
+                        Nombre de blagues ces dernières 24h
+                    </h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                    <LineChart
+                    width={500}
+                    height={300}
+                    data={this.state.hourlyStat}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                    >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#484848"/>
+                    <XAxis dataKey="axis" stroke="#ffffff"/>
+                    <YAxis stroke="#ffffff"/>
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" name="tweets du 'feur'" dataKey="Count" stackId="2" stroke="#8884d8" fill="#8884d8" />
+                    </LineChart>
+                    </ResponsiveContainer>
                 </div>
 
                 <div className="sm:w-full md:w-8/12 justify-center items-center mx-auto mt-10" id="chart-tweets">
@@ -272,24 +313,24 @@ export default Stats;
 /*
 
 <div>
-                                    <p class="flex items-center justify-end text-green-500 text-md">
-                                        <span class="font-bold">6%</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path class="heroicon-ui" d="M20 15a1 1 0 002 0V7a1 1 0 00-1-1h-8a1 1 0 000 2h5.59L13 13.59l-3.3-3.3a1 1 0 00-1.4 0l-6 6a1 1 0 001.4 1.42L9 12.4l3.3 3.3a1 1 0 001.4 0L20 9.4V15z"/></svg>
+                                    <p className="flex items-center justify-end text-green-500 text-md">
+                                        <span className="font-bold">6%</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path className="heroicon-ui" d="M20 15a1 1 0 002 0V7a1 1 0 00-1-1h-8a1 1 0 000 2h5.59L13 13.59l-3.3-3.3a1 1 0 00-1.4 0l-6 6a1 1 0 001.4 1.42L9 12.4l3.3 3.3a1 1 0 001.4 0L20 9.4V15z"/></svg>
                                     </p>
                                 </div>
 
 
                                 <div>
-                                    <p class="flex items-center justify-end text-red-500 text-md">
-                                        <span class="font-bold">6%</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path class="heroicon-ui" d="M20 9a1 1 0 012 0v8a1 1 0 01-1 1h-8a1 1 0 010-2h5.59L13 10.41l-3.3 3.3a1 1 0 01-1.4 0l-6-6a1 1 0 011.4-1.42L9 11.6l3.3-3.3a1 1 0 011.4 0l6.3 6.3V9z"/></svg>
+                                    <p className="flex items-center justify-end text-red-500 text-md">
+                                        <span className="font-bold">6%</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path className="heroicon-ui" d="M20 9a1 1 0 012 0v8a1 1 0 01-1 1h-8a1 1 0 010-2h5.59L13 10.41l-3.3 3.3a1 1 0 01-1.4 0l-6-6a1 1 0 011.4-1.42L9 11.6l3.3-3.3a1 1 0 011.4 0l6.3 6.3V9z"/></svg>
                                     </p>
                                 </div>
 
                                 <div>
-                                    <p class="flex items-center justify-end text-gray-500 text-md">
-                                        <span class="font-bold">0%</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path class="heroicon-ui" d="M17 11a1 1 0 010 2H7a1 1 0 010-2h10z"/></svg>
+                                    <p className="flex items-center justify-end text-gray-500 text-md">
+                                        <span className="font-bold">0%</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path className="heroicon-ui" d="M17 11a1 1 0 010 2H7a1 1 0 010-2h10z"/></svg>
                                     </p>
                                 </div>
 

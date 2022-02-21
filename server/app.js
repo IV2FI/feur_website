@@ -19,31 +19,9 @@ if(process.env.ENV == "DEV"){
   var mainUrl="http://localhost:3000"
   var callbackUrlForTwitter = "http://localhost:3000"
 }else{
-  var callbackUrlForTwitter = "https://feurmons-leurs-gueules.net"
-  var mainUrl="https://feurmons-leurs-gueules.net"
+  var callbackUrlForTwitter = "https://feurtracker.fr"
+  var mainUrl="https://feurtracker.fr"
 }
-
-var session = require('express-session');
-
-var MySQLStore = require('express-mysql-session')(session);
-
-var options = {
-	host    :process.env.DB_HOST,
-  user    :process.env.DB_USER,
-  password:process.env.DB_PASSWORD,
-	database: 'session'
-};
-
-var connection = mysql2.createPool(options);
-var sessionStore = new MySQLStore({}, connection);
-
-app.use(session({
-	key: 'session_feurme',
-	secret: process.env.SESSION_SECRET,
-	store: sessionStore,
-	resave: false,
-	saveUninitialized: false
-}));
 
 const req = require('express/lib/request');
 
@@ -120,6 +98,12 @@ app.get('/api/victim/max', function (req, res) {
 
 app.get('/api/tweet/total', function (req, res) {
   database.getTotalTweets(function(err, results){
+    res.json(results)
+  })
+});
+
+app.get('/api/stats/hourly', function (req, res) {
+  database.getLast24Hours(function(err, results){
     res.json(results)
   })
 });

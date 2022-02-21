@@ -17,6 +17,11 @@ module.exports = {
         loader: "babel-loader"
       },
       {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
+      {
         test: /\.scss$/,
         exclude: /node_modules/, 
         use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
@@ -38,7 +43,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/index.html',
-      favicon: './src/resources/favicon.ico'
+      favicon: './src/resources/favicon.png'
     })
   ]
 }

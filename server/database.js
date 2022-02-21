@@ -59,6 +59,13 @@ module.exports = class Database {
         })
     }
 
+    getLast24Hours = (callback) => {
+        var sql = "SELECT month(created_at) as Month, day(created_at) as Day, hour(created_at) as Hour, count(*) as Count FROM " + this.tweetTable + " WHERE created_at >= (now() - INTERVAL 24 HOUR) group by day(created_at), hour(created_at), month(created_at)"
+        this.connection.query(sql, function(err, results){
+            callback(err, results)
+        })
+    }
+
     getLatestUpdate = (callback) => {
         var sql = "SELECT created_at FROM " + this.statsTable + " ORDER BY day DESC LIMIT 1;"
         this.connection.query(sql, function(err, results){

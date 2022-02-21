@@ -104,7 +104,7 @@ class Search extends Component {
                         </div>
 
                     </div>  
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-500">https://feurmons-leurs-gueules.net</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-500">https://feurtracker.fr</p>
                     </div>  
             </div>
             <div className="items-center justify-center">
