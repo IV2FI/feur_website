@@ -138,7 +138,7 @@ class Search extends Component {
                 className="flex items-center justify-center py-1 px-2 mt-25"
                 target="_blank"
                 rel="noreferrer"
-                href={"http://twitter.com/share?text=Hey @" + this.state.search + " ! Tu n'as jamais fait la blague du feur sur Twitter depuis fin janvier 2022... Merci d'être une bonne personne !&url=https://feurmons-leurs-gueules.net"}
+                href={"http://twitter.com/share?text=Hey @" + this.state.search + " ! Tu n'as jamais fait la blague du feur sur Twitter depuis fin janvier 2022... Merci d'être une bonne personne !&url=https://feurtracker.fr"}
                 ><FaTwitter/>&nbsp; Le féliciter</a>
                 </button>
             </div>
